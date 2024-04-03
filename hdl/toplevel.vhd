@@ -110,7 +110,7 @@ end toplevel;
 
 architecture Behavioral of toplevel is
   attribute mark_debug  : string;
-  constant kEnDebugTop  : string:= "true";
+  constant kEnDebugTop  : string:= "false";
 
   -- System --------------------------------------------------------------------------------
   -- AMANEQ specification
@@ -161,8 +161,8 @@ architecture Behavioral of toplevel is
   attribute IODELAY_GROUP : string;
   attribute IODELAY_GROUP of u_FastDelay : label is "idelay_5";
 
-  --constant  kPcbVersion : string:= "GN-2006-4";
-  constant  kPcbVersion : string:= "GN-2006-1";
+  constant  kPcbVersion : string:= "GN-2006-4";
+  --constant  kPcbVersion : string:= "GN-2006-1";
 
   function GetMikuIoStd(version: string) return string is
   begin
@@ -223,10 +223,12 @@ architecture Behavioral of toplevel is
     end if;
   end function;
 
-  function GetIoGroup(index : integer) return string is
+  function GetIoGroup(version : string; index : integer) return string is
   begin
-    if(index = kIdMikuSec) then
+    if(index = kIdMikuSec and version = "GN-2006-1") then
       return "idelay_1";
+    elsif(index = kIdMikuSec and version = "GN-2006-4") then
+      return "idelay_4";
     else
       return GetCddIoGroup(index - kIdMikuCDD0);
     end if;
@@ -703,7 +705,7 @@ architecture Behavioral of toplevel is
       kDiffTerm        => TRUE,
       kIoStandardRx    => GetRxIoStd(kPcbVersion, kIdMikuSec),
       kRxPolarity      => GetRxPolarity(kIdMikuSec),
-      kIoDelayGroup    => GetIoGroup(kIdMikuSec),
+      kIoDelayGroup    => GetIoGroup(kPcbVersion, kIdMikuSec),
       kFixIdelayTap    => FALSE,
       kFreqFastClk     => 500.0,
       kFreqRefClk      => 200.0,
@@ -885,7 +887,7 @@ u_LACCP : entity mylib.LaccpMainBlock
         kDiffTerm        => TRUE,
         kIoStandardRx    => GetRxIoStd(kPcbVersion, i),
         kRxPolarity      => GetRxPolarity(i),
-        kIoDelayGroup    => GetIoGroup(i),
+        kIoDelayGroup    => GetIoGroup(kPcbVersion, i),
         kFixIdelayTap    => FALSE,
         kFreqFastClk     => 500.0,
         kFreqRefClk      => 200.0,
@@ -1117,7 +1119,8 @@ u_LACCP : entity mylib.LaccpMainBlock
       laccpUp             => is_ready_for_daq,
       partnerIpAddr       => link_addr_partter,
       hbcOffset           => hbc_offset,
-      fineOffset          => std_logic_vector(laccp_fine_offset),
+      localFineOffset     => std_logic_vector(local_fine_offset),
+      laccpFineOffset     => std_logic_vector(laccp_fine_offset),
       hbfState            => open,
 
       -- Local bus --
