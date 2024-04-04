@@ -161,8 +161,8 @@ architecture Behavioral of toplevel is
   attribute IODELAY_GROUP : string;
   attribute IODELAY_GROUP of u_FastDelay : label is "idelay_5";
 
-  constant  kPcbVersion : string:= "GN-2006-4";
-  --constant  kPcbVersion : string:= "GN-2006-1";
+  --constant  kPcbVersion : string:= "GN-2006-4";
+  constant  kPcbVersion : string:= "GN-2006-1";
 
   function GetMikuIoStd(version: string) return string is
   begin
@@ -1170,7 +1170,7 @@ u_LACCP : entity mylib.LaccpMainBlock
   --
   -- Streaming LR-TDC ---------------------------------------------------------------------
   signal_in_merge   <= NIM_IN(1) & MAIN_IN_D & MAIN_IN_U;
-  strtdc_trigger_in <= sync_nim_in(2);
+  strtdc_trigger_in <= laccp_pulse_out(kDownPulseTrigger);
 
   u_SLT_Inst: entity mylib.StrLrTdc
     generic map(
