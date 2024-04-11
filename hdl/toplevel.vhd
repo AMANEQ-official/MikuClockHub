@@ -18,7 +18,6 @@ use mylib.defHeartBeatUnit.all;
 use mylib.defFreeRunScaler.all;
 use mylib.defSiTCP.all;
 use mylib.defRBCP.all;
-use mylib.defMiiRstTimer.all;
 
 use mylib.defDataBusAbst.all;
 use mylib.defDelimiter.all;
@@ -121,6 +120,7 @@ architecture Behavioral of toplevel is
 
   signal sitcp_reset  : std_logic;
   signal pwr_on_reset : std_logic;
+  signal raw_pwr_on_reset : std_logic;
   signal system_reset : std_logic;
   signal user_reset   : std_logic;
 
@@ -131,6 +131,8 @@ architecture Behavioral of toplevel is
   signal rst_from_bus : std_logic;
 
   signal delayed_usr_rstb : std_logic;
+
+  signal module_ready     : std_logic;
 
   signal sync_nim_in      : std_logic_vector(NIM_IN'range);
   signal tmp_nim_out      : std_logic_vector(NIM_OUT'range);
@@ -144,6 +146,9 @@ architecture Behavioral of toplevel is
   signal led_hbf_state      : std_logic;
   signal idelayctrl_ready   : std_logic_vector(4 downto 0);
   signal idelay_reset       : std_logic;
+  signal local_trigger_in   : std_logic;
+  signal hbu_reset          : std_logic;
+  signal hbu_prim_reset     : std_logic;
 
   -- DIP -----------------------------------------------------------------------------------
   signal dip_sw       : std_logic_vector(DIP'range);
@@ -153,7 +158,7 @@ architecture Behavioral of toplevel is
   end record;
   constant kSiTCP       : regLeaf := (Index => 1);
   constant kTriggerOut  : regLeaf := (Index => 2);
-  constant kNC3         : regLeaf := (Index => 3);
+  constant kStandAlone  : regLeaf := (Index => 3);
   constant kNC4         : regLeaf := (Index => 4);
   constant kDummy       : regLeaf := (Index => 0);
 
@@ -161,8 +166,8 @@ architecture Behavioral of toplevel is
   attribute IODELAY_GROUP : string;
   attribute IODELAY_GROUP of u_FastDelay : label is "idelay_5";
 
-  constant  kPcbVersion : string:= "GN-2006-4";
-  --constant  kPcbVersion : string:= "GN-2006-1";
+  --constant  kPcbVersion : string:= "GN-2006-4";
+  constant  kPcbVersion : string:= "GN-2006-1";
 
   function GetMikuIoStd(version: string) return string is
   begin
@@ -292,7 +297,9 @@ architecture Behavioral of toplevel is
 
  -- LACCP --
   signal laccp_reset        : MikuScalarPort;
-  signal laccp_pulse_out     : std_logic_vector(kNumLaccpPulse-1 downto 0);
+  signal laccp_pulse_out    : std_logic_vector(kNumLaccpPulse-1 downto 0);
+  signal laccp_pulse_in     : std_logic_vector(kNumLaccpPulse-1 downto 0);
+  signal pulse_rejected     : MikuScalarPort;
 
   signal is_ready_for_daq   : MikuScalarPort;
   signal sync_pulse_out     : std_logic;
@@ -302,6 +309,12 @@ architecture Behavioral of toplevel is
   signal valid_laccp_intra_out  : std_logic_vector(kNumExtIntraPort-1 downto 0);
   signal data_laccp_intra_in    : ExtIntraType;
   signal data_laccp_intra_out   : ExtIntraType;
+
+  signal prim_is_ready_laccp_intra   : std_logic_vector(kNumExtIntraPort-1 downto 0);
+  signal prim_valid_laccp_intra_in   : std_logic_vector(kNumExtIntraPort-1 downto 0);
+  signal prim_valid_laccp_intra_out  : std_logic_vector(kNumExtIntraPort-1 downto 0);
+  signal prim_data_laccp_intra_in    : ExtIntraType;
+  signal prim_data_laccp_intra_out   : ExtIntraType;
 
   constant kPosCdd              : std_logic_vector(kIdMikuCDD0+kNumCdcm-1 downto kIdMikuCDD0):= (others => '0');
   signal is_ready_inter_up, is_ready_inter_down : std_logic_vector(kMaxNumInterconnect-1 downto 0);
@@ -333,6 +346,17 @@ architecture Behavioral of toplevel is
   signal frame_ctrl_gate    : std_logic;
   signal hbf_num_mismatch   : std_logic;
 
+  signal heartbeat_signal_prim   : std_logic;
+  signal heartbeat_count_prim    : std_logic_vector(kWidthHbCount-1 downto 0);
+  signal hbf_number_prim         : std_logic_vector(kWidthHbfNum-1 downto 0);
+
+  signal heartbeat_signal_secnd   : std_logic;
+  signal heartbeat_count_secnd    : std_logic_vector(kWidthHbCount-1 downto 0);
+  signal hbf_number_secnd         : std_logic_vector(kWidthHbfNum-1 downto 0);
+
+  signal hbf_state_prim           : HbfStateType;
+  signal hbf_state_secnd          : HbfStateType;
+
   attribute mark_debug of is_ready_for_daq   : signal is kEnDebugTop;
   attribute mark_debug of link_addr_partter  : signal is kEnDebugTop;
   attribute mark_debug of valid_link_addr    : signal is kEnDebugTop;
@@ -340,10 +364,14 @@ architecture Behavioral of toplevel is
   attribute mark_debug of laccp_fine_offset  : signal is kEnDebugTop;
   attribute mark_debug of local_fine_offset  : signal is kEnDebugTop;
 
+  -- Mikumari Util ------------------------------------------------------------
+  signal cbt_init_from_mutil   : MikuScalarPort;
+
   -- Scaler -------------------------------------------------------------------
-  constant kNumExtraScr : integer:= 0;-- Trigger ++ TrgRejected
+  constant kNumExtraScr : integer:= 2;-- Trigger ++ TrgRejected
   constant kMsbScr      : integer:= kNumSysInput+kNumExtraScr+kNumInput-1;
   signal scr_en_in      : std_logic_vector(kMsbScr downto 0);
+  signal global_scr_reset : std_logic;
 
   -- Streaming TDC ------------------------------------------------------------
   -- scaler --
@@ -517,6 +545,7 @@ architecture Behavioral of toplevel is
   end component;
 
   -- SFP transceiver -----------------------------------------------------------------------
+  constant kWidthPhyAddr  : integer:= 5;
   constant kMiiPhyad      : std_logic_vector(kWidthPhyAddr-1 downto 0):= "00000";
   signal mii_init_mdc, mii_init_mdio : std_logic;
 
@@ -618,11 +647,16 @@ architecture Behavioral of toplevel is
   --c6c_reset       <= '1';
   mmcm_cdcm_reset <= (not delayed_usr_rstb);
 
-  system_reset    <= (not clk_miku_locked) or (not USR_RSTB);
-  pwr_on_reset    <= (not clk_sys_locked) or (not USR_RSTB);
+  system_reset      <= (not clk_miku_locked) or (not USR_RSTB);
+  raw_pwr_on_reset  <= (not clk_sys_locked) or (not USR_RSTB);
+  u_KeepPwrOnRst : entity mylib.RstDelayTimer
+    port map(raw_pwr_on_reset, X"1FFFFFFF", clk_slow, module_ready, pwr_on_reset);
 
   user_reset      <= system_reset or rst_from_bus or emergency_reset(0);
   bct_reset       <= system_reset or emergency_reset(0);
+
+  u_sync_nimin  : entity mylib.synchronizer port map(clk_slow, NIM_IN(2), sync_nim_in(2));
+  u_trg_in      : entity mylib.EdgeDetector port map(clk_slow, sync_nim_in(2), local_trigger_in);
 
   u_nimo_buf : process(clk_slow)
   begin
@@ -640,7 +674,7 @@ architecture Behavioral of toplevel is
   dip_sw(4)   <= DIP(4);
 
   led_hbf_state <= '1' when(hbf_state = kActiveFrame) else '0';
-  LED         <= clk_miku_locked & mikumari_link_up(kIdMikuSec) & is_ready_for_daq(kIdMikuSec) & daq_is_runnig;
+  LED         <= (clk_miku_locked and module_ready) & mikumari_link_up(kIdMikuSec) & is_ready_for_daq(kIdMikuSec) & daq_is_runnig;
 
   -- Mezzanine connection --------------------------------------------------------------
   MIKUMARI_TXP  <= miku_txp(kIdMikuSec);
@@ -662,20 +696,8 @@ architecture Behavioral of toplevel is
   OPT18_LED <= is_ready_for_daq(15 downto 8);
 
   -- MIKUMARI --------------------------------------------------------------------------
-  u_KeepInit : process(system_reset, clk_slow)
-    variable counter   : integer:= 0;
-  begin
-    if(system_reset = '1') then
-      power_on_init   <= '1';
-      counter         := 16#0FFFFFFF#;
-    elsif(clk_slow'event and clk_slow = '1') then
-      if(counter = 0) then
-        power_on_init   <= '0';
-      else
-        counter   := counter -1;
-      end if;
-    end if;
-  end process;
+  u_KeepInit : entity mylib.RstDelayTimer
+    port map(system_reset, X"0FFFFFFF", clk_slow, open, power_on_init );
 
   gen_idleayctrl : for i in 0 to idelayctrl_ready'length-1 generate
     attribute IODELAY_GROUP of u_IDELAYCTRL_inst : label is "idelay_" & integer'image(i+1);
@@ -691,6 +713,14 @@ architecture Behavioral of toplevel is
 
   -- Secondary Links ----------------------------------------------------------------
   laccp_reset(kIdMikuSec) <= system_reset or (not mikumari_link_up(kIdMikuSec));
+  laccp_pulse_in(kDownPulseTrigger)   <= local_trigger_in or laccp_pulse_out(kDownPulseTrigger);
+  laccp_pulse_in(kDownPulseCntRst)    <= laccp_pulse_out(kDownPulseCntRst) or global_scr_reset;
+  laccp_pulse_in(kDownPulseRSV2)      <= laccp_pulse_out(kDownPulseRSV2);
+  laccp_pulse_in(kDownPulseRSV3)      <= laccp_pulse_out(kDownPulseRSV3);
+  laccp_pulse_in(kDownPulseRSV4)      <= laccp_pulse_out(kDownPulseRSV4);
+  laccp_pulse_in(kDownPulseRSV5)      <= laccp_pulse_out(kDownPulseRSV5);
+  laccp_pulse_in(kDownPulseRSV6)      <= laccp_pulse_out(kDownPulseRSV6);
+  laccp_pulse_in(kDownPulseRSV7)      <= laccp_pulse_out(kDownPulseRSV7);
 
   u_Miku_Inst : entity mylib.MikumariBlock
     generic map(
@@ -724,13 +754,13 @@ architecture Behavioral of toplevel is
     )
     port map(
       -- System ports -----------------------------------------------------------
-      rst           => system_reset,
+      rst           => system_reset or DIP(kStandAlone.Index),
       pwrOnRst      => pwr_on_reset,
       clkSer        => clk_fast,
       clkPar        => clk_slow,
       clkIndep      => clk_gbe,
       clkIdctrl     => clk_gbe,
-      initIn        => power_on_init,
+      initIn        => power_on_init or cbt_init_from_mutil(kIdMikuSec),
 
       TXP           => miku_txp(kIdMikuSec),
       TXN           => miku_txn(kIdMikuSec),
@@ -869,7 +899,7 @@ u_LACCP : entity mylib.LaccpMainBlock
     );
 
   -- Primary Links ------------------------------------------------------------------
-  miku_fanout_reset   <= not is_ready_for_daq(kIdMikuSec);
+  miku_fanout_reset   <= power_on_init when(DIP(kStandAlone.Index) = '1') else (not is_ready_for_daq(kIdMikuSec));
 
   gen_mikumari : for i in kIdMikuCDD0 to kNumMikumari-2 generate
     laccp_reset(i) <= system_reset or (not mikumari_link_up(i));
@@ -912,7 +942,7 @@ u_LACCP : entity mylib.LaccpMainBlock
         clkPar        => clk_slow,
         clkIndep      => clk_gbe,
         clkIdctrl     => clk_gbe,
-        initIn        => miku_fanout_reset,
+        initIn        => miku_fanout_reset or cbt_init_from_mutil(kIdMikuSec),
 
         TXP           => miku_txp(i),
         TXN           => miku_txn(i),
@@ -981,9 +1011,9 @@ u_LACCP : entity mylib.LaccpMainBlock
 
           -- User Interface ------------------------------------------------
           isReadyForDaq     => is_ready_for_daq(i),
-          laccpPulsesIn     => laccp_pulse_out,
+          laccpPulsesIn     => laccp_pulse_in,
           laccpPulsesOut    => open,
-          pulseInRejected   => open,
+          pulseInRejected   => pulse_rejected(i),
 
           -- RLIGP --
           addrMyLink        => sitcp_ip_addr(0),
@@ -1009,11 +1039,11 @@ u_LACCP : entity mylib.LaccpMainBlock
 
           -- LACCP Bus Port ------------------------------------------------
           -- Intra-port--
-          isReadyIntraIn    => (others => '0'),
-          dataIntraIn       => (others => (others => '0')),
-          validIntraIn      => (others => '0'),
-          dataIntraOut      => open,
-          validIntraOut     => open,
+          isReadyIntraIn    => prim_is_ready_laccp_intra,
+          dataIntraIn       => prim_data_laccp_intra_in,
+          validIntraIn      => prim_valid_laccp_intra_in,
+          dataIntraOut      => prim_data_laccp_intra_out,
+          validIntraOut     => prim_valid_laccp_intra_out,
 
           -- Interconnect --
           isReadyInterIn    => (0 => is_ready_inter_up(i), others => '0'),
@@ -1053,8 +1083,14 @@ u_LACCP : entity mylib.LaccpMainBlock
         );
   end generate;
 
-  --
+  -- HeartBeat Unit ----------------------------------------------------------------------------
+  heartbeat_signal  <= heartbeat_signal_prim  when(DIP(kStandAlone.Index) = '1') else heartbeat_signal_secnd;
+  heartbeat_count   <= heartbeat_count_prim  when(DIP(kStandAlone.Index) = '1') else heartbeat_count_secnd;
+  hbf_number        <= hbf_number_prim  when(DIP(kStandAlone.Index) = '1') else hbf_number_secnd;
+  hbf_state         <= hbf_state_prim when(DIP(kStandAlone.Index) = '1') else hbf_state_secnd;
+
   frame_ctrl_gate <= '0';
+  hbu_reset       <= '1' when(dip_sw(kStandAlone.Index) = '1') else laccp_reset(kIdMikuSec);
 
   u_HBU : entity mylib.HeartBeatUnit
     generic map
@@ -1064,9 +1100,9 @@ u_LACCP : entity mylib.LaccpMainBlock
     port map
       (
         -- System --
-        rst               => laccp_reset(kIdMikuSec),
+        rst               => hbu_reset,
         clk               => clk_slow,
-        enStandAlone      => '0',
+        enStandAlone      => DIP(kStandAlone.Index),
         keepLocalHbfNum   => '1',
 
         -- Sync I/F --
@@ -1076,15 +1112,15 @@ u_LACCP : entity mylib.LaccpMainBlock
         isSynchronized    => hbu_is_synchronized,
 
         -- HeartBeat I/F --
-        heartbeatOut      => heartbeat_signal,
-        heartbeatCount    => heartbeat_count,
-        hbfNumber         => hbf_number,
+        heartbeatOut      => heartbeat_signal_secnd,
+        heartbeatCount    => heartbeat_count_secnd,
+        hbfNumber         => hbf_number_secnd,
         hbfNumMismatch    => hbf_num_mismatch,
 
         -- DAQ I/F --
         hbfCtrlGateIn     => frame_ctrl_gate,
-        forceOn           => '0',
-        frameState        => hbf_state,
+        forceOn           => '1',
+        frameState        => hbf_state_secnd,
 
         -- LACCP Bus --
         dataBusIn         => data_laccp_intra_out(GetExtIntraIndex(kPortHBU)),
@@ -1094,6 +1130,43 @@ u_LACCP : entity mylib.LaccpMainBlock
         isReadyOut        => is_ready_laccp_intra(GetExtIntraIndex(kPortHBU))
 
       );
+
+  --
+  -- Primary-HeartBeat Unit --
+  hbu_prim_reset  <= '1' when(dip_sw(kStandAlone.Index) = '0') else system_reset;
+
+    u_HBU_Prim : entity mylib.PrimaryHeartBeatUnit
+      generic map
+        (
+          enDebug           => false
+        )
+      port map
+        (
+          -- System --
+          rst               => hbu_prim_reset,
+          primaryRst        => '0',
+          clk               => clk_slow,
+
+          -- Sync I/F --
+
+          -- HeartBeat I/F --
+          heartbeatOut      => heartbeat_signal_prim,
+          heartbeatCount    => heartbeat_count_prim,
+          hbfNumber         => hbf_number_prim,
+
+          -- DAQ I/F --
+          hbfCtrlGateIn     => '0',
+          forceOn           => '1',
+          frameState        => hbf_state_prim,
+
+          -- LACCP Bus --
+          dataBusIn         => prim_data_laccp_intra_out(GetExtIntraIndex(kPortHBU)),
+          validBusIn        => prim_valid_laccp_intra_out(GetExtIntraIndex(kPortHBU)),
+          dataBusOut        => prim_data_laccp_intra_in(GetExtIntraIndex(kPortHBU)),
+          validBusOut       => prim_valid_laccp_intra_in(GetExtIntraIndex(kPortHBU)),
+          isReadyOut        => prim_is_ready_laccp_intra(GetExtIntraIndex(kPortHBU))
+        );
+
 
   -- MIKUMARI utility ---------------------------------------------------------------------
   u_MUTIL : entity mylib.MikumariUtil
@@ -1109,7 +1182,7 @@ u_LACCP : entity mylib.LaccpMainBlock
       cbtLaneUp           => cbt_lane_up,
       tapValueIn          => tap_value_out,
       bitslipNumIn        => bitslip_num_out,
-      cbtInitOut          => open,
+      cbtInitOut          => cbt_init_from_mutil,
       tapValueOut         => open,
 
       -- MIKUMARI Link ports --
@@ -1142,6 +1215,8 @@ u_LACCP : entity mylib.LaccpMainBlock
   scr_en_in(kMsbScr - kIndexHbfThrotTime)   <= scr_thr_on(4);
   scr_en_in(kMsbScr - kIndexMikuError)      <= (pattern_error(kIdMikuSec) or checksum_err(kIdMikuSec) or frame_broken(kIdMikuSec) or recv_terminated(kIdMikuSec)) and is_ready_for_daq(kIdMikuSec);
 
+  scr_en_in(kNumInput+1)                    <= laccp_pulse_in(kDownPulseTrigger);
+  scr_en_in(kNumInput)                      <= or_reduce(pulse_rejected);
   scr_en_in(kNumInput-1 downto 0)           <= swap_vect(hit_out);
 
   u_SCR: entity mylib.FreeRunScaler
@@ -1157,6 +1232,7 @@ u_LACCP : entity mylib.LaccpMainBlock
       hbCount             => (heartbeat_count'range => heartbeat_count, others => '0'),
       hbfNum              => (hbf_number'range => hbf_number, others => '0'),
       scrEnIn             => scr_en_in,
+      scrRstOut           => global_scr_reset,
 
       -- Local bus --
       addrLocalBus        => addr_LocalBus,
@@ -1170,7 +1246,7 @@ u_LACCP : entity mylib.LaccpMainBlock
   --
   -- Streaming LR-TDC ---------------------------------------------------------------------
   signal_in_merge   <= NIM_IN(1) & MAIN_IN_D & MAIN_IN_U;
-  strtdc_trigger_in <= laccp_pulse_out(kDownPulseTrigger);
+  strtdc_trigger_in <= local_trigger_in or laccp_pulse_out(kDownPulseTrigger);
 
   u_SLT_Inst: entity mylib.StrLrTdc
     generic map(
@@ -1481,11 +1557,13 @@ u_LACCP : entity mylib.LaccpMainBlock
   end generate;
 
   -- SFP transceiver -------------------------------------------------------------------
-  u_MiiRstTimer_Inst : entity mylib.MiiRstTimer
+  u_MiiRstTimer_Inst : entity mylib.RstDelayTimer
     port map(
-      rst         => (pwr_on_reset or sitcp_reset or emergency_reset(0)),
+      rstIn       => (pwr_on_reset or sitcp_reset or emergency_reset(0)),
+      preSetVal   => X"00FFFFFF",
       clk         => clk_sys,
-      rstMiiOut   => mii_reset
+      readyOut    => open,
+      delayRstOut => mii_reset
     );
 
   u_MiiInit_Inst : mii_initializer
