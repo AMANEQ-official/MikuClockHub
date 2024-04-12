@@ -1,6 +1,6 @@
 # Clock definition
 #create_clock -period 10.000 -name clk_osc -waveform {0.000 5.000} [get_ports BASE_CLKP]
-create_clock -period 8.000 -name clk_gmod -waveform {0.000 4.000} [get_pins u_BUFG/O]
+#create_clock -period 8.000 -name clk_gmod -waveform {0.000 4.000} [get_pins u_BUFG/O]
 
 #create_clock -period 8 -name clk_mod -waveform {0.000 4.000} [get_pins u_cbtlane/BUFG_modclk/O]
 #create_clock -period 10 -name clk_mod -waveform {0.000 5.000} [get_pins u_cbtlane/BUFG_modclk/O]
