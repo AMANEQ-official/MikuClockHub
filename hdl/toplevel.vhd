@@ -166,8 +166,8 @@ architecture Behavioral of toplevel is
   attribute IODELAY_GROUP : string;
   attribute IODELAY_GROUP of u_FastDelay : label is "idelay_5";
 
-  --constant  kPcbVersion : string:= "GN-2006-4";
-  constant  kPcbVersion : string:= "GN-2006-1";
+  constant  kPcbVersion : string:= "GN-2006-4";
+  --constant  kPcbVersion : string:= "GN-2006-1";
 
   function GetMikuIoStd(version: string) return string is
   begin
@@ -421,6 +421,7 @@ architecture Behavioral of toplevel is
   -- C6C ----------------------------------------------------------------------------------
   signal c6c_reset              : std_logic;
   signal c6c_fast, c6c_slow     : std_logic;
+  signal c6c_refclk             : std_logic;
 
   -- MIG ----------------------------------------------------------------------------------
 
@@ -1328,7 +1329,7 @@ u_LACCP : entity mylib.LaccpMainBlock
     port map(
       rst                 => system_reset,
       clk                 => clk_slow,
-      refClkIn            => gmod_clk,
+      refClkIn            => c6c_refclk,
 
       chipReset           => c6c_reset,
       clkIndep            => clk_sys,
@@ -1691,11 +1692,12 @@ u_LACCP : entity mylib.LaccpMainBlock
       );
 
   --
-  u_BUFG :  BUFG
-    port map (
-      O => gmod_clk, -- 1-bit output: Clock output
-      I => mod_clk  -- 1-bit input: Clock input
-    );
+  c6c_refclk  <= clk_sys when(DIP(kStandAlone.Index) = '1') else mod_clk;
+--  u_BUFG :  BUFG
+--    port map (
+--      O => gmod_clk, -- 1-bit output: Clock output
+--      I => mod_clk  -- 1-bit input: Clock input
+--    );
 
   u_BUFG_Slow_inst :  BUFG
     port map (
