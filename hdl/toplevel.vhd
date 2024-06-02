@@ -189,8 +189,8 @@ architecture Behavioral of toplevel is
   function GetEnDebug(index: integer) return boolean is
   begin
     case index is
-      when 0  => return true;
-      when 1  => return false;
+      when 0  => return false;
+      when 1  => return true;
       when 2  => return false;
       when 3  => return false;
       when 4  => return false;
