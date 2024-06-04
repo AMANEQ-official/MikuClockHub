@@ -159,7 +159,7 @@ architecture Behavioral of toplevel is
   constant kSiTCP       : regLeaf := (Index => 1);
   constant kTriggerOut  : regLeaf := (Index => 2);
   constant kStandAlone  : regLeaf := (Index => 3);
-  constant kNC4         : regLeaf := (Index => 4);
+  constant kPhaseMode   : regLeaf := (Index => 4);
   constant kDummy       : regLeaf := (Index => 0);
 
   -- MIKUMARI -----------------------------------------------------------------------------
@@ -190,7 +190,7 @@ architecture Behavioral of toplevel is
   begin
     case index is
       when 0  => return false;
-      when 1  => return true;
+      when 1  => return false;
       when 2  => return false;
       when 3  => return false;
       when 4  => return false;
@@ -364,6 +364,11 @@ architecture Behavioral of toplevel is
   attribute mark_debug of serdes_offset      : signal is kEnDebugTop;
   attribute mark_debug of laccp_fine_offset  : signal is kEnDebugTop;
   attribute mark_debug of local_fine_offset  : signal is kEnDebugTop;
+
+  -- Clock Phase Selection ----------------------------------------------------
+  signal rst_ref_clk    : std_logic;
+  signal phase_ready    : std_logic;
+  signal mikumari_ready : std_logic;
 
   -- Mikumari Util ------------------------------------------------------------
   signal cbt_init_from_mutil    : MikuScalarPort;
@@ -647,7 +652,7 @@ architecture Behavioral of toplevel is
   clk_miku_locked <= CDCE_LOCK and mmcm_cdcm_locked and and_reduce(idelayctrl_ready);
   --clk_miku_locked <= mmcm_cdcm_locked;
 
-  c6c_reset       <= (not clk_sys_locked) or (not delayed_usr_rstb);
+  c6c_reset       <= (not clk_sys_locked) or (not delayed_usr_rstb) or rst_ref_clk;
   --c6c_reset       <= '1';
   mmcm_cdcm_reset <= (not delayed_usr_rstb);
 
@@ -681,8 +686,9 @@ architecture Behavioral of toplevel is
   dip_sw(3)   <= DIP(3);
   dip_sw(4)   <= DIP(4);
 
-  led_hbf_state <= '1' when(hbf_state = kActiveFrame) else '0';
-  LED         <= (clk_miku_locked and module_ready) & mikumari_link_up(kIdMikuSec) & is_ready_for_daq(kIdMikuSec) & daq_is_runnig;
+  led_hbf_state   <= '1' when(hbf_state = kActiveFrame) else '0';
+  mikumari_ready  <= mikumari_link_up(kIdMikuSec) when(dip_sw(kPhaseMode.Index) = '0') else mikumari_link_up(kIdMikuSec) and phase_ready;
+  LED         <= (clk_miku_locked and module_ready) & mikumari_ready & is_ready_for_daq(kIdMikuSec) & daq_is_runnig;
 
   -- Mezzanine connection --------------------------------------------------------------
   MIKUMARI_TXP  <= miku_txp(kIdMikuSec);
@@ -704,8 +710,8 @@ architecture Behavioral of toplevel is
   OPT18_LED <= is_ready_for_daq(15 downto 8);
 
   -- MIKUMARI --------------------------------------------------------------------------
-  u_KeepInit : entity mylib.RstDelayTimer
-    port map(system_reset, X"0FFFFFFF", clk_slow, open, power_on_init );
+--  u_KeepInit : entity mylib.RstDelayTimer
+--    port map(system_reset, X"0FFFFFFF", clk_slow, open, power_on_init );
 
   gen_idleayctrl : for i in 0 to idelayctrl_ready'length-1 generate
     attribute IODELAY_GROUP of u_IDELAYCTRL_inst : label is "idelay_" & integer'image(i+1);
@@ -897,6 +903,42 @@ u_LACCP : entity mylib.LaccpMainBlock
       pulseRx           => pulse_rx(kIdMikuSec),
       pulseTypeRx       => pulse_type_rx(kIdMikuSec)
 
+    );
+
+  -- CPS -------------------------------------------------------------------------------
+  u_CPS: entity mylib.phaseSelection
+    generic map(
+      enDebug         => FALSE
+    )
+    port map(
+      clkBase         => clk_slow,
+      rstBase         => system_reset,
+      clkSys          => clk_sys,
+      rstSys          => pwr_on_reset,
+
+      enPhaseSelection=> dip_sw(kPhaseMode.Index),
+      mikumariLinkUp  => mikumari_link_up(kIdMikuSec),
+      tapValue        => tap_value_out(kIdMikuSec),
+      bitslipNum      => bitslip_num_out(kIdMikuSec),
+      cdceLocked      => CDCE_LOCK,
+
+      rstCECE62002    => rst_ref_clk,
+      initCBT         => power_on_init,
+
+      isReady         => phase_ready,
+
+      CS              => EEP_CS(2),
+      SK              => EEP_SK(2),
+      DI              => EEP_DI(2),
+      DO              => EEP_DO(2),
+
+      -- local bus
+      addrLocalBus    => addr_LocalBus,
+      dataLocalBusIn  => data_LocalBusIn,
+      dataLocalBusOut => data_LocalBusOut(kCPS.ID),
+      reLocalBus      => re_LocalBus(kCPS.ID),
+      weLocalBus      => we_LocalBus(kCPS.ID),
+      readyLocalBus   => ready_LocalBus(kCPS.ID)
     );
 
   -- Primary Links ------------------------------------------------------------------
@@ -1263,7 +1305,7 @@ u_LACCP : entity mylib.LaccpMainBlock
     generic map(
       kTdcType    => "LRTDC",
       kNumInput   => kNumInput,
-      kDivisionRatio  => 2,
+      kDivisionRatio  => 4,
       enDEBUG     => false
     )
     port map(
