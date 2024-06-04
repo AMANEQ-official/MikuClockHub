@@ -284,6 +284,12 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/strLrTdc.vhd"]"\
  "[file normalize "$origin_dir/hdl/toplevel.vhd"]"\
  "[file normalize "$origin_dir/hdl/laccp/laccp/HeartBeatUnit.vhd"]"\
+ "[file normalize "$origin_dir/hdl/utility/phase-select/AT93C46DController.vhd"]"\
+ "[file normalize "$origin_dir/hdl/utility/phase-select/defAT93C46DController.vhd]"\
+ "[file normalize "$origin_dir/hdl/utility/phase-select/defPhaseEEPROM.vhd"]"\
+ "[file normalize "$origin_dir/hdl/utility/phase-select/defPhaseSelection.vhd"]"\
+ "[file normalize "$origin_dir/hdl/utility/phase-select/phaseEEPROM.vhd"]"\
+ "[file normalize "$origin_dir/hdl/utility/phase-select/phaseSelection.vhd"]"\
  "[file normalize "$origin_dir/constrs/pins.xdc"]"\
  "[file normalize "$origin_dir/constrs/timing.xdc"]"\
  "[file normalize "$origin_dir/constrs/gig_ethernet.xdc"]"\
@@ -508,6 +514,12 @@ set files [list \
  [file normalize "${origin_dir}/hdl/utility/mikumari/defCDD.vhd"] \
  [file normalize "${origin_dir}/hdl/common/main/defDCR.vhd"] \
  [file normalize "${origin_dir}/hdl/utility/mikumari/defMikumariUtil.vhd"] \
+ [file normalize "${origin_dir}/hdl/utility/phase-select/AT93C46DController.vhd"] \
+ [file normalize "${origin_dir}/hdl/utility/phase-select/defAT93C46DController.vhd"] \
+ [file normalize "${origin_dir}/hdl/utility/phase-select/defPhaseEEPROM.vhd"] \
+ [file normalize "${origin_dir}/hdl/utility/phase-select/defPhaseSelection.vhd"] \
+ [file normalize "${origin_dir}/hdl/utility/phase-select/phaseEEPROM.vhd"] \
+ [file normalize "${origin_dir}/hdl/utility/phase-select/phaseSelection.vhd"] \
  [file normalize "${origin_dir}/hdl/strtdc/odpblock/defTDCDelayBuffer.vhd"] \
  [file normalize "${origin_dir}/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_clocking.vhd"] \
  [file normalize "${origin_dir}/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_gt_common.vhd"] \
@@ -1331,6 +1343,41 @@ set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
 set_property -name "library" -value "mylib" -objects $file_obj
 
+set file "$origin_dir/hdl/utility/phase-select/AT93C46DController.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/utility/phase-select/defAT93C46DController.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/utility/phase-select/defPhaseEEPROM.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/utility/phase-select/defPhaseSelection.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/utility/phase-select/phaseEEPROM.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/utility/phase-select/phaseSelection.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
 
 # Set 'sources_1' fileset file properties for local files
 # None
