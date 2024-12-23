@@ -23,6 +23,7 @@ use mylib.defDataBusAbst.all;
 use mylib.defDelimiter.all;
 use mylib.defTDC.all;
 use mylib.defStrLRTDC.all;
+use mylib.defIOManager.all;
 
 entity toplevel is
   Port (
@@ -142,10 +143,12 @@ architecture Behavioral of toplevel is
 
   -- Impl --
   signal local_scr_reset    : std_logic;
+  signal scr_rst_in         : std_logic;
   signal led_hbf_state      : std_logic;
   signal idelayctrl_ready   : std_logic_vector(4 downto 0);
   signal idelay_reset       : std_logic;
   signal local_trigger_in   : std_logic;
+  signal trigger_in         : std_logic;
   signal hbu_reset          : std_logic;
   signal hbu_prim_reset     : std_logic;
   signal frame_flag_in      : std_logic_vector(kWidthFrameFlag-1 downto 0);
@@ -170,7 +173,7 @@ architecture Behavioral of toplevel is
   attribute IODELAY_GROUP of u_FastDelay : label is "idelay_5";
 
   constant  kPcbVersion : string:= "GN-2006-4";
-  --constant  kPcbVersion : string:= "GN-2006-1";
+--  constant  kPcbVersion : string:= "GN-2006-1";
 
   function GetMikuIoStd(version: string) return string is
   begin
@@ -428,6 +431,10 @@ architecture Behavioral of toplevel is
     rd_rst_busy : OUT STD_LOGIC
   );
   END COMPONENT;
+
+  -- IOM ----------------------------------------------------------------------------------
+  signal intsig_from_iom        : std_logic_vector(3 downto 0);
+  signal intsig_to_iom          : std_logic_vector(7 downto 0);
 
   -- C6C ----------------------------------------------------------------------------------
   signal c6c_reset              : std_logic;
@@ -691,7 +698,8 @@ architecture Behavioral of toplevel is
 
   led_hbf_state   <= '1' when(hbf_state = kActiveFrame) else '0';
   mikumari_ready  <= mikumari_link_up(kIdMikuSec) when(dip_sw(kPhaseMode.Index) = '0') else mikumari_link_up(kIdMikuSec) and phase_ready;
-  LED         <= (clk_miku_locked and module_ready) & mikumari_ready & is_ready_for_daq(kIdMikuSec) & daq_is_runnig;
+--  LED         <= (clk_miku_locked and module_ready) & mikumari_ready & is_ready_for_daq(kIdMikuSec) & daq_is_runnig;
+  LED         <= (clk_miku_locked and module_ready) & DIP(kStandAlone.Index) & is_ready_for_daq(kIdMikuSec) & daq_is_runnig;
 
   -- Mezzanine connection --------------------------------------------------------------
   MIKUMARI_TXP  <= miku_txp(kIdMikuSec);
@@ -1213,7 +1221,7 @@ u_LACCP : entity mylib.LaccpMainBlock
           hbfNumber         => hbf_number_prim,
 
           hbfFlagsIn        => frame_flag_in,
-          frameFlags        => frame_flag_out,
+          frameFlags        => frame_flag_out_pri,
 
           -- DAQ I/F --
           hbfCtrlGateIn     => frame_ctrl_gate,
@@ -1238,6 +1246,8 @@ u_LACCP : entity mylib.LaccpMainBlock
       -- System ----------------------------------------------------
       rst               => user_reset,
       clk               => clk_slow,
+
+      clockRootMode     => DIP(kStandAlone.Index),
 
       -- CBT status ports --
       cbtLaneUp           => cbt_lane_up,
@@ -1413,8 +1423,8 @@ u_LACCP : entity mylib.LaccpMainBlock
   intsig_to_iom(0)      <= heartbeat_signal;
   intsig_to_iom(1)      <= tcp_isActive(0);
   intsig_to_iom(2)      <= laccp_pulse_out(kDownPulseTrigger);
-  intsig_to_iom(3)      <= frame_flag_out(0),
-  intsig_to_iom(4)      <= frame_flag_out(1),
+  intsig_to_iom(3)      <= frame_flag_out(0);
+  intsig_to_iom(4)      <= frame_flag_out(1);
   intsig_to_iom(5)      <= '1';
   intsig_to_iom(6)      <= '1';
   intsig_to_iom(7)      <= '1';
