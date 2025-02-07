@@ -275,6 +275,7 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/hdl/strtdc/delimiter/DelimiterGenerator.vhd"]"\
  "[file normalize "$origin_dir/hdl/strtdc/odpblock/DelimiterInserter.vhd"]"\
  "[file normalize "$origin_dir/hdl/strtdc/odpblock/OfsCorrect.vhd"]"\
+ "[file normalize "$origin_dir/hdl/strtdc/vitalblock/OfsCorrectV2.vhd"]"\
  "[file normalize "$origin_dir/hdl/strtdc/vitalblock/IncomingBuffer.vhd"]"\
  "[file normalize "$origin_dir/hdl/strtdc/throttling/InputThrottlingType2.vhd"]"\
  "[file normalize "$origin_dir/hdl/strtdc/odpblock/LTMerger.vhd"]"\
@@ -542,6 +543,7 @@ set files [list \
  [file normalize "${origin_dir}/hdl/strtdc/delimiter/DelimiterGenerator.vhd"] \
  [file normalize "${origin_dir}/hdl/strtdc/odpblock/DelimiterInserter.vhd"] \
  [file normalize "${origin_dir}/hdl/strtdc/odpblock/OfsCorrect.vhd"] \
+ [file normalize "${origin_dir}/hdl/strtdc/vitalblock/OfsCorrectV2.vhd"] \
  [file normalize "${origin_dir}/hdl/strtdc/vitalblock/IncomingBuffer.vhd"] \
  [file normalize "${origin_dir}/hdl/strtdc/throttling/InputThrottlingType2.vhd"] \
  [file normalize "${origin_dir}/hdl/strtdc/odpblock/LTMerger.vhd"] \
@@ -1214,7 +1216,7 @@ set_property -name "library" -value "mylib" -objects $file_obj
 set file "$origin_dir/hdl/strtdc/odpblock/TOTFilter.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "VHDL" -objects $file_obj
+set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
 set_property -name "library" -value "mylib" -objects $file_obj
 
 set file "$origin_dir/hdl/utility/mikumari/defCDD.vhd"
@@ -1296,6 +1298,12 @@ set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
 set_property -name "library" -value "mylib" -objects $file_obj
 
 set file "$origin_dir/hdl/strtdc/odpblock/OfsCorrect.vhd"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/strtdc/vitalblock/OfsCorrectV2.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL 2008" -objects $file_obj
