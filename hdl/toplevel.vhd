@@ -1225,7 +1225,7 @@ u_LACCP : entity mylib.LaccpMainBlock
 
           -- DAQ I/F --
           hbfCtrlGateIn     => frame_ctrl_gate,
-          forceOn           => '1',
+          forceOn           => '0',
           frameState        => hbf_state_prim,
 
           -- LACCP Bus --
