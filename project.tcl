@@ -15,304 +15,9 @@
 #   run results please launch the synthesis/implementation runs as needed.
 #
 #*****************************************************************************************
-# NOTE: In order to use this script for source control purposes, please make sure that the
-#       following files are added to the source control system:-
-#
-# 1. This project restoration tcl script (project.tcl) that was generated.
-#
-# 2. The following source(s) files that were local or imported into the original project.
-#    (Please see the '$orig_proj_dir' and '$origin_dir' variable setting below at the start of the script)
-#
-#    <none>
-#
-# 3. The following remote source files that were added to the original project:-
-#
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/RbcpCdc_SysToLink/RbcpCdc_SysToLink.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/RbcpCdc_LinkToSys/RbcpCdc_LinkToSys.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/bbt-sitcp-core/SiTCP_XC7K_32K_BBT_V110.edf"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/mmcm_cdcm/mmcm_cdcm.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/clk_wiz_sys/clk_wiz_sys.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/fmp_wd_fifo/fmp_wd_fifo.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/fmp_rd_fifo/fmp_rd_fifo.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/sem_controller/sem_controller.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/xadc_sys/xadc_sys.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/LinkBuffer/LinkBuffer.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/mergerBackFifo/mergerBackFifo.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/mergerFrontFifo/mergerFrontFifo.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/incomingFifo/incomingFifo.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/finecount_bram/finecount_bram.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/ip/scr_fifo/scr_fifo.xci"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/MOD_WRAP_SiTCP_XC7K.V"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/bbt-sitcp-core/SiTCP_XC7K_32K_BBT_V110.V"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/bbt-sitcp-core/TIMER.v"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/mii_init.v"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/defBusAddressMap.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/bus_controller/defBusController.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/defRBCP.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/ResetGen.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/bus_controller/BusController.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/defCDCE62002Controller.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/synchronizer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/EdgeDetector.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/GeneralSpiMaster.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/CDCE62002Controller.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/defCDCM.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/ClockMonitor.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CdcmTxEncoder.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CdcmTxImpl.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/Cdcm8TxImpl.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CdcmTx.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CbtTx.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CdcmRxDecoder.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CdcmRxImpl.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/Cdcm8RxImpl.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CdcmRx.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CbtRx.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/cbt/CbtLane.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/DelayGen.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/defDataBusAbst.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/defLaccp.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/defHeartBeatUnit.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/delimiter/defDelimiter.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/delimiter/DelimiterReplacer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/lrtdc-impl/defTDC.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/lrtdc-impl/odpblock/lrtdc/FineCounter.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/lrtdc-impl/odpblock/lrtdc/FineCounterDecoder.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/lrtdc-impl/odpblock/lrtdc/FirstFDCEs.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/defFlashMemoryProgrammer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/defSPI_IF.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/SPI_IF.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/FlashMemoryProgrammer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/utility/scaler/defFreeRunScaler.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/utility/scaler/FreeRunScaler.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/trigEmulation/defGateGen.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/utility/MyDPRamSE.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/trigEmulation/GateGen.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/gig_ethernet_pcs_pma/GbEPcsPma.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/gig_ethernet_pcs_pma/GtClockDistributer2.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/throttling/defThrottling.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/throttling/HbfThrottling.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/utility/MyDPRamSRRT.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/utility/MyDPRamDE.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/utility/MyFifoComClock.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/defBitwiseOp.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/LaccpBusSwitch.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/mikumari-link/defMikumari.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/LaccpFrameRx.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/LaccpFrameTx.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/RLIGP.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/RCAP.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/LaccpMainBlock.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/defMiiRstTimer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/MiiRstTimer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/mikumari-link/PRBS16.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/mikumari-link/MikumariTx.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/mikumari-link/MikumariRx.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/mikumari-link/MikumariLane.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/mikumari/mikumari-link/Wrapper/MikumariBlock.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/throttling/OutputThrottling.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/PrimaryHeartBeatUnit.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/RbcpCdc.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/defSelfDiagnosisSystem.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/defSemImpl.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/SemImpl.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/SelfDiagnosisSystem.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/defSiTCP.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/TCP_sender.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/lrtdc-impl/odpblock/lrtdc/TDCUnit.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/odpblock/TOTFilter.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/utility/mikumari/defCDD.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/main/defDCR.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/utility/mikumari/defMikumariUtil.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/odpblock/defTDCDelayBuffer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_clocking.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_gt_common.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_reset_sync_ex.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_resets.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_sync_block_ex.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_tx_elastic_buffer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/common/sitcp/global_sitcp_manager.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/delimiter/DelimiterGenerator.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/odpblock/DelimiterInserter.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/vitalblock/IncomingBuffer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/throttling/InputThrottlingType2.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/odpblock/LTMerger.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/odpblock/LTParing.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/vitalblock/MergerUnit.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/vitalblock/MergerBlock.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/vitalblock/MergerMznBlock.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/utility/mikumari/MikumariUtil.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/odpblock/TDCDelayBuffer.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/lrtdc-impl/odpblock/ODPBlock.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/vitalblock/VitalBlock.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/lrtdc-impl/defStrLRTDC.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/strtdc/lrtdc-impl/strLrTdc.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/toplevel.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/hdl/laccp/laccp/HeartBeatUnit.vhd"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/constrs/pins.xdc"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/constrs/timing.xdc"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/constrs/gig_ethernet.xdc"
-#    "C:/Xilinx/Vivado/vivado_project/amaneq-strtdc/MikuClockHub.git/constrs/impl.xdc"
-#
-#*****************************************************************************************
-
-# Check file required for this script exists
-proc checkRequiredFiles { origin_dir} {
-  set status true
-  set files [list \
- "[file normalize "$origin_dir/ip/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma.xci"]"\
- "[file normalize "$origin_dir/ip/RbcpCdc_SysToLink/RbcpCdc_SysToLink.xci"]"\
- "[file normalize "$origin_dir/ip/RbcpCdc_LinkToSys/RbcpCdc_LinkToSys.xci"]"\
- "[file normalize "$origin_dir/hdl/bbt-sitcp-core/SiTCP_XC7K_32K_BBT_V110.edf"]"\
- "[file normalize "$origin_dir/ip/mmcm_cdcm/mmcm_cdcm.xci"]"\
- "[file normalize "$origin_dir/ip/clk_wiz_sys/clk_wiz_sys.xci"]"\
- "[file normalize "$origin_dir/ip/fmp_wd_fifo/fmp_wd_fifo.xci"]"\
- "[file normalize "$origin_dir/ip/fmp_rd_fifo/fmp_rd_fifo.xci"]"\
- "[file normalize "$origin_dir/ip/sem_controller/sem_controller.xci"]"\
- "[file normalize "$origin_dir/ip/xadc_sys/xadc_sys.xci"]"\
- "[file normalize "$origin_dir/ip/LinkBuffer/LinkBuffer.xci"]"\
- "[file normalize "$origin_dir/ip/mergerBackFifo/mergerBackFifo.xci"]"\
- "[file normalize "$origin_dir/ip/mergerFrontFifo/mergerFrontFifo.xci"]"\
- "[file normalize "$origin_dir/ip/incomingFifo/incomingFifo.xci"]"\
- "[file normalize "$origin_dir/ip/finecount_bram/finecount_bram.xci"]"\
- "[file normalize "$origin_dir/ip/scr_fifo/scr_fifo.xci"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/MOD_WRAP_SiTCP_XC7K.V"]"\
- "[file normalize "$origin_dir/hdl/bbt-sitcp-core/SiTCP_XC7K_32K_BBT_V110.V"]"\
- "[file normalize "$origin_dir/hdl/bbt-sitcp-core/TIMER.v"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/mii_init.v"]"\
- "[file normalize "$origin_dir/hdl/defBusAddressMap.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/bus_controller/defBusController.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/defRBCP.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/ResetGen.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/bus_controller/BusController.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/defCDCE62002Controller.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/synchronizer.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/EdgeDetector.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/GeneralSpiMaster.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/CDCE62002Controller.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/defCDCM.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/ClockMonitor.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CdcmTxEncoder.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CdcmTxImpl.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/Cdcm8TxImpl.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CdcmTx.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CbtTx.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CdcmRxDecoder.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CdcmRxImpl.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/Cdcm8RxImpl.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CdcmRx.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CbtRx.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/cbt/CbtLane.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/DelayGen.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/SigStretcher.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/defDataBusAbst.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/defLaccp.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/defHeartBeatUnit.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/delimiter/defDelimiter.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/delimiter/DelimiterReplacer.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/defTDC.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/odpblock/lrtdc/FineCounter.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/odpblock/lrtdc/FineCounterDecoder.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/odpblock/lrtdc/FirstFDCEs.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/defFlashMemoryProgrammer.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/defSPI_IF.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/SPI_IF.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/FlashMemoryProgrammer.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/scaler/defFreeRunScaler.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/scaler/FreeRunScaler.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/iom/defIOManager.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/iom/IOManager.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/trigEmulation/defGateGen.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/utility/MyDPRamSE.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/trigEmulation/GateGen.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/gig_ethernet_pcs_pma/GbEPcsPma.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/gig_ethernet_pcs_pma/GtClockDistributer2.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/throttling/defThrottling.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/throttling/HbfThrottling.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/utility/MyDPRamSRRT.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/utility/MyDPRamARRT.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/utility/MyDPRamDE.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/utility/MyFifoComClock.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/defBitwiseOp.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/LaccpBusSwitch.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/mikumari-link/defMikumari.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/LaccpFrameRx.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/LaccpFrameTx.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/RLIGP.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/RCAP.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/LaccpMainBlock.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/RstDelayTimer.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/mikumari-link/PRBS16.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/mikumari-link/MikumariTx.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/mikumari-link/MikumariRx.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/mikumari-link/MikumariLane.vhd"]"\
- "[file normalize "$origin_dir/hdl/mikumari/mikumari-link/Wrapper/MikumariBlock.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/throttling/OutputThrottling.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/PrimaryHeartBeatUnit.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/RbcpCdc.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/defSelfDiagnosisSystem.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/defSemImpl.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/SemImpl.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/SelfDiagnosisSystem.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/defSiTCP.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/TCP_sender.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/defMiiRstTimer.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/MiiRstTimer.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/odpblock/lrtdc/TDCUnit.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/odpblock/TOTFilter.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/mikumari/defCDD.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/main/defDCR.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/mikumari/defMikumariUtil.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/odpblock/defTDCDelayBuffer.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_clocking.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_gt_common.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_reset_sync_ex.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_resets.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_sync_block_ex.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma_tx_elastic_buffer.vhd"]"\
- "[file normalize "$origin_dir/hdl/common/sitcp/global_sitcp_manager.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/delimiter/DelimiterGenerator.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/odpblock/DelimiterInserter.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/odpblock/OfsCorrect.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/vitalblock/OfsCorrectV2.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/vitalblock/IncomingBuffer.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/throttling/InputThrottlingType2.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/odpblock/LTMerger.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/odpblock/LTParing.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/vitalblock/MergerUnit.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/vitalblock/MergerBlock.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/vitalblock/MergerMznBlock.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/mikumari/MikumariUtil.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/odpblock/TDCDelayBuffer.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/odpblock/ODPBlock.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/vitalblock/VitalBlock.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/defStrLRTDC.vhd"]"\
- "[file normalize "$origin_dir/hdl/strtdc/lrtdc-impl/strLrTdc.vhd"]"\
- "[file normalize "$origin_dir/hdl/toplevel.vhd"]"\
- "[file normalize "$origin_dir/hdl/laccp/laccp/HeartBeatUnit.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/phase-select/AT93C46DController.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/phase-select/defAT93C46DController.vhd]"\
- "[file normalize "$origin_dir/hdl/utility/phase-select/defPhaseEEPROM.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/phase-select/defPhaseSelection.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/phase-select/phaseEEPROM.vhd"]"\
- "[file normalize "$origin_dir/hdl/utility/phase-select/phaseSelection.vhd"]"\
- "[file normalize "$origin_dir/constrs/pins.xdc"]"\
- "[file normalize "$origin_dir/constrs/timing.xdc"]"\
- "[file normalize "$origin_dir/constrs/gig_ethernet.xdc"]"\
- "[file normalize "$origin_dir/constrs/impl.xdc"]"\
-  ]
-  foreach ifile $files {
-    if { ![file isfile $ifile] } {
-      puts " Could not find remote file $ifile "
-      set status false
-    }
-  }
-
-  return $status
-}
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."
+set build_dir "build"
 
 # Use origin directory path location variable, if specified in the tcl shell
 if { [info exists ::origin_dir_loc] } {
@@ -376,7 +81,7 @@ if { $::argc > 0 } {
 }
 
 # Set the directory path for the original project from where this script was exported
-set orig_proj_dir "[file normalize "$origin_dir/build"]"
+set orig_proj_dir "[file normalize "$origin_dir/$build_dir"]"
 
 # Check for paths and files needed for project creation
 set validate_required 0
@@ -390,7 +95,7 @@ if { $validate_required } {
 }
 
 # Create project
-create_project ${_xil_proj_name_} ./build -part xc7k160tffg676-2
+create_project ${_xil_proj_name_} ./$build_dir -part xc7k160tffg676-2
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
@@ -466,6 +171,9 @@ set files [list \
  [file normalize "${origin_dir}/hdl/mikumari/cbt/CdcmRx.vhd"] \
  [file normalize "${origin_dir}/hdl/mikumari/cbt/CbtRx.vhd"] \
  [file normalize "${origin_dir}/hdl/mikumari/cbt/CbtLane.vhd"] \
+ [file normalize "${origin_dir}/hdl/mikumari/cbt/IserdesBitslip.v"] \
+ [file normalize "${origin_dir}/hdl/mikumari/cbt/udiv_cbt_q_V2.v"] \
+ [file normalize "${origin_dir}/hdl/mikumari/cbt/udiv_q_cbt_axis.v"] \
  [file normalize "${origin_dir}/hdl/common/main/DelayGen.vhd"] \
  [file normalize "${origin_dir}/hdl/common/main/SigStretcher.vhd"] \
  [file normalize "${origin_dir}/hdl/strtdc/defDataBusAbst.vhd"] \
@@ -504,6 +212,7 @@ set files [list \
  [file normalize "${origin_dir}/hdl/laccp/laccp/RLIGP.vhd"] \
  [file normalize "${origin_dir}/hdl/laccp/laccp/RCAP.vhd"] \
  [file normalize "${origin_dir}/hdl/laccp/laccp/LaccpMainBlock.vhd"] \
+ [file normalize "${origin_dir}/hdl/laccp/laccp/CalcFineLantency_US.v"] \
  [file normalize "${origin_dir}/hdl/common/main/RstDelayTimer.vhd"] \
  [file normalize "${origin_dir}/hdl/mikumari/mikumari-link/PRBS16.vhd"] \
  [file normalize "${origin_dir}/hdl/mikumari/mikumari-link/MikumariTx.vhd"] \
@@ -563,21 +272,10 @@ set files [list \
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/ip/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma.xci"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-if { ![get_property "is_locked" $file_obj] } {
-  set_property -name "is_locked" -value "1" -objects $file_obj
-}
-set_property -name "library" -value "mylib" -objects $file_obj
-set_property -name "registered_with_manager" -value "1" -objects $file_obj
-
 set file "$origin_dir/ip/RbcpCdc_SysToLink/RbcpCdc_SysToLink.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -587,7 +285,6 @@ set file "$origin_dir/ip/RbcpCdc_LinkToSys/RbcpCdc_LinkToSys.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -603,7 +300,6 @@ set file "$origin_dir/ip/mmcm_cdcm/mmcm_cdcm.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -613,7 +309,6 @@ set file "$origin_dir/ip/clk_wiz_sys/clk_wiz_sys.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -623,7 +318,6 @@ set file "$origin_dir/ip/fmp_wd_fifo/fmp_wd_fifo.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -633,7 +327,6 @@ set file "$origin_dir/ip/fmp_rd_fifo/fmp_rd_fifo.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -643,7 +336,6 @@ set file "$origin_dir/ip/sem_controller/sem_controller.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -653,7 +345,6 @@ set file "$origin_dir/ip/xadc_sys/xadc_sys.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -663,7 +354,6 @@ set file "$origin_dir/ip/LinkBuffer/LinkBuffer.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -673,7 +363,6 @@ set file "$origin_dir/ip/mergerBackFifo/mergerBackFifo.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -683,7 +372,6 @@ set file "$origin_dir/ip/mergerFrontFifo/mergerFrontFifo.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -693,7 +381,6 @@ set file "$origin_dir/ip/incomingFifo/incomingFifo.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -703,7 +390,6 @@ set file "$origin_dir/ip/finecount_bram/finecount_bram.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -713,7 +399,6 @@ set file "$origin_dir/ip/scr_fifo/scr_fifo.xci"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
-set_property -name "library" -value "mylib" -objects $file_obj
 set_property -name "registered_with_manager" -value "1" -objects $file_obj
 if { ![get_property "is_locked" $file_obj] } {
   set_property -name "synth_checkpoint_mode" -value "Singular" -objects $file_obj
@@ -875,6 +560,21 @@ set file "$origin_dir/hdl/mikumari/cbt/CbtLane.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/mikumari/cbt/IserdesBitslip.v"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/mikumari/cbt/udiv_cbt_q_V2.v"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/mikumari/cbt/udiv_q_cbt_axis.v"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "library" -value "mylib" -objects $file_obj
 
 set file "$origin_dir/hdl/common/main/DelayGen.vhd"
@@ -1103,6 +803,11 @@ set file "$origin_dir/hdl/laccp/laccp/LaccpMainBlock.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
+set_property -name "library" -value "mylib" -objects $file_obj
+
+set file "$origin_dir/hdl/laccp/laccp/CalcFineLatency_US.v"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "library" -value "mylib" -objects $file_obj
 
 set file "$origin_dir/hdl/common/main/RstDelayTimer.vhd"
@@ -1442,6 +1147,23 @@ set_property -name "library" -value "mylib" -objects $file_obj
 set obj [get_filesets sources_1]
 set_property -name "dataflow_viewer_settings" -value "min_width=16" -objects $obj
 set_property -name "top" -value "toplevel" -objects $obj
+
+# Set 'sources_1' fileset object
+set obj [get_filesets sources_1]
+set files [list \
+ [file normalize "${origin_dir}/ip/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma.xci"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sources_1' fileset file properties for remote files
+set file "$origin_dir/ip/gig_ethernet_pcs_pma/gig_ethernet_pcs_pma.xci"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "generate_files_for_reference" -value "0" -objects $file_obj
+if { ![get_property "is_locked" $file_obj] } {
+  set_property -name "is_locked" -value "1" -objects $file_obj
+}
+set_property -name "registered_with_manager" -value "1" -objects $file_obj
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {

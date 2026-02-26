@@ -110,7 +110,7 @@ end toplevel;
 
 architecture Behavioral of toplevel is
   attribute mark_debug  : string;
-  constant kEnDebugTop  : string:= "false";
+  constant kEnDebugTop  : string:= "true";
 
   -- System --------------------------------------------------------------------------------
   -- AMANEQ specification
@@ -172,8 +172,8 @@ architecture Behavioral of toplevel is
   attribute IODELAY_GROUP : string;
   attribute IODELAY_GROUP of u_FastDelay : label is "idelay_5";
 
-  --constant  kPcbVersion : string:= "GN-2006-4";
-  constant  kPcbVersion : string:= "GN-2006-1";
+  constant  kPcbVersion : string:= "GN-2006-4";
+  --constant  kPcbVersion : string:= "GN-2006-1";
 
   function GetMikuIoStd(version: string) return string is
   begin
@@ -370,6 +370,8 @@ architecture Behavioral of toplevel is
   attribute mark_debug of serdes_offset      : signal is kEnDebugTop;
   attribute mark_debug of laccp_fine_offset  : signal is kEnDebugTop;
   attribute mark_debug of local_fine_offset  : signal is kEnDebugTop;
+  attribute mark_debug of mikumari_link_up   : signal is kEnDebugTop;
+  attribute mark_debug of laccp_reset        : signal is kEnDebugTop;
 
   -- Clock Phase Selection ----------------------------------------------------
   signal rst_ref_clk    : std_logic;
@@ -763,6 +765,7 @@ architecture Behavioral of toplevel is
 
   u_Miku_Inst : entity mylib.MikumariBlock
     generic map(
+      kFamily          => "7S",
       -- CBT generic -------------------------------------------------------------
       -- CDCM-Mod-Pattern --
       kCdcmModWidth    => 8,
@@ -778,6 +781,7 @@ architecture Behavioral of toplevel is
       kFixIdelayTap    => FALSE,
       kFreqFastClk     => 500.0,
       kFreqRefClk      => 200.0,
+      kBitslice0       => FALSE,
       -- Encoder/Decoder
       kNumEncodeBits   => 1,
       -- Master/Slave
@@ -795,7 +799,8 @@ architecture Behavioral of toplevel is
       -- System ports -----------------------------------------------------------
       rst           => system_reset or DIP(kStandAlone.Index),
       pwrOnRst      => pwr_on_reset,
-      clkSer        => clk_fast,
+      clkSerTx      => clk_fast,
+      clkSerRx      => clk_fast,
       clkPar        => clk_slow,
       clkIndep      => clk_gbe,
       clkIdctrl     => clk_gbe,
@@ -820,6 +825,8 @@ architecture Behavioral of toplevel is
       bitslipNum    => bitslip_num_out(kIdMikuSec),
       serdesOffset  => serdes_offset(kIdMikuSec),
       firstBitPatt  => open,
+      cntValueOutInit       => open,
+      cntValueOutSlaveInit  => open,
 
       -- Mikumari ports -------------------------------------------------------
       linkUp        => mikumari_link_up(kIdMikuSec),
@@ -882,8 +889,16 @@ u_LACCP : entity mylib.LaccpMainBlock
       -- RCAP --
       idelayTapIn       => unsigned(tap_value_out(kIdMikuSec)),
       serdesLantencyIn  => serdes_offset(kIdMikuSec),
+      cntValueInitIn      => (others => '0'),
+      cntValueSlaveInitIn => (others => '0'),
       idelayTapOut      => open,
       serdesLantencyOut => open,
+
+      cntValueInitOut       => open,
+      cntValueSlaveInitOut  => open,
+      roundTripTime         => open,
+      calibDelay            => (others => '0'),
+      calibDelayOut         => open,
 
       hbuIsSyncedIn     => hbu_is_synchronized,
       syncPulseIn       => '0',
@@ -990,6 +1005,7 @@ u_LACCP : entity mylib.LaccpMainBlock
 
     u_Miku_Inst : entity mylib.MikumariBlock
       generic map(
+        kFamily          => "7S",
         -- CBT generic -------------------------------------------------------------
         -- CDCM-Mod-Pattern --
         kCdcmModWidth    => 8,
@@ -1005,6 +1021,7 @@ u_LACCP : entity mylib.LaccpMainBlock
         kFixIdelayTap    => FALSE,
         kFreqFastClk     => 500.0,
         kFreqRefClk      => 200.0,
+        kBitslice0       => FALSE,
         -- Encoder/Decoder
         kNumEncodeBits   => 1,
         -- Master/Slave
@@ -1022,11 +1039,12 @@ u_LACCP : entity mylib.LaccpMainBlock
         -- System ports -----------------------------------------------------------
         rst           => system_reset,
         pwrOnRst      => pwr_on_reset,
-        clkSer        => clk_fast,
+        clkSerTx      => clk_fast,
+        clkSerRx      => clk_fast,
         clkPar        => clk_slow,
         clkIndep      => clk_gbe,
         clkIdctrl     => clk_gbe,
-        initIn        => miku_fanout_reset or cbt_init_from_mutil(kIdMikuSec),
+        initIn        => miku_fanout_reset or cbt_init_from_mutil(i),
 
         TXP           => miku_txp(i),
         TXN           => miku_txn(i),
@@ -1047,6 +1065,8 @@ u_LACCP : entity mylib.LaccpMainBlock
         bitslipNum    => bitslip_num_out(i),
         serdesOffset  => serdes_offset(i),
         firstBitPatt  => open,
+        cntValueOutInit       => open,
+        cntValueOutSlaveInit  => open,
 
         -- Mikumari ports -------------------------------------------------------
         linkUp        => mikumari_link_up(i),
@@ -1108,8 +1128,16 @@ u_LACCP : entity mylib.LaccpMainBlock
           -- RCAP --
           idelayTapIn       => unsigned(tap_value_out(i)),
           serdesLantencyIn  => serdes_offset(i),
+          cntValueInitIn      => (others => '0'),
+          cntValueSlaveInitIn => (others => '0'),
           idelayTapOut      => open,
           serdesLantencyOut => open,
+
+          cntValueInitOut       => open,
+          cntValueSlaveInitOut  => open,
+          roundTripTime         => open,
+          calibDelay            => (others => '0'),
+          calibDelayOut         => open,
 
           hbuIsSyncedIn     => '0',
           syncPulseIn       => heartbeat_signal,
