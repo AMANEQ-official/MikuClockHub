@@ -83,6 +83,7 @@
 build/
 !bit/*.bit
 !mcs/*.mcs
+dfx_runtime.txt
 #########
 # Ignore IP files
 #########
